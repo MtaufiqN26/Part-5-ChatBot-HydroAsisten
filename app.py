@@ -1,18 +1,31 @@
+%%writefile app.py
 
 # Import semuanya dulu
 import streamlit as st
 from bot import build_agent
 
+st.set_page_config(
+    page_title="Hydro Asisten",
+    page_icon="🌱",
+    layout="centered", # Mengubah tata letak agar lebih fokus
+    initial_sidebar_state="collapsed"
+)
 
 # Judul
 st.title("🌿 Hydro Asisten")
-st.markdown("###### Asisten Pribadi untuk Pertumbuhan Hidroponik Anda")
+st.subheader("Asisten Pribadi untuk Pertumbuhan Hidroponik Anda")
 
-# Session state
+# Session state untuk agent dan pesan
 if "agent" not in st.session_state:
   st.session_state.agent = build_agent()
+  # Pesan awal dari bot untuk memandu pengguna
+  st.session_state.messages = [{
+      "role": "assistant",
+      "content": "Selamat datang! Saya Hydro Asisten. Saya bisa membantu Anda mengecek pH ideal, EC ideal, atau mendiagnosa daun kuning. Apa yang bisa saya bantu hari ini? Misalnya: 'pH ideal untuk selada' atau 'daun muda saya menguning'."
+  }]
 
 if "messages" not in st.session_state:
+  # Ini hanya sebagai fallback, biasanya akan diisi di blok if "agent" not in st.session_state
   st.session_state.messages = []
 
 agent = st.session_state.agent
@@ -26,7 +39,7 @@ if reset_chat_button:
   # ai_output = None
 
 
-user_input = st.chat_input()
+user_input = st.chat_input("Tanyakan sesuatu tentang hidroponik...")
 
 
 for m in st.session_state.messages:
